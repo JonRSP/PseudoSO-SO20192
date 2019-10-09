@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+'''
+O processo é uma entidade que realiza ações, pode ser do tipo tempo real ou de usuário.
+
+Quando a professora liberar a especificação completa eu complemento isso aqui
+'''
 class Process:
     self.timeOfArrival = 0
     self.type = 0

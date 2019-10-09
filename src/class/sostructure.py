@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+'''
+Esta entidade armazena as estruturas para que o pseudo SO funcione
+'''
+
 from .process import Process
 from .file import File
 from .primaryMemory import PrimaryMemory
@@ -6,7 +10,7 @@ from .secondaryMemory import SecondaryMemory
 from .action import Action
 import sys
 
-class SO:
+class SOStructure:
     self.processes = []
     self.primaryMemory = PrimaryMemory(64, 960)
     self.secondaryMemory = 0

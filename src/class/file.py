@@ -1,4 +1,7 @@
-
+# -*- coding: utf-8 -*-
+'''
+Esta entidade representa os arquivos criados durante a execução do pseudo SO
+'''
 class File:
     self.name = 0 # Nome representado por uma letra
     self.size = 0 # Tamanho do arquivo
