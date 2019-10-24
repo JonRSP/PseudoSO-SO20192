@@ -2,27 +2,29 @@
 '''
 O processo é uma entidade que realiza ações, pode ser do tipo tempo real ou de usuário.
 
-Quando a professora liberar a especificação completa eu complemento isso aqui
+Cada processo, portanto, cada linha, deve conter os seguintes dados:
+<tempo de inicialização>, <prioridade>, <tempo de processador>, <blocos em memória>, 
+<númerocódigo da impressora requisitada>, <requisição do scanner>, <requisição do modem>, <númerocódigo do disco> 
 '''
 class Process:
     self.timeOfArrival = 0
-    self.type = 0
     self.priority = 0
+    self.type = 0 # (não achei isso na documentacao)
     self.size = 0
-    self.requestResource1 = 0 # Mudar para o nome do recurso quando a prof liberar a especificação
-    self.requestResource2 = 0
-    self.requestResource3 = 0
-    self.requestResource4 = 0
+    self.requestPrinter = 0 # 0 (nao solicitou), 1 (solicitou impress 1) ou 2 (solicitou impress 2)
+    self.requestScanner = 0 # 0 (nao solicitou) ou 1 (solicitou)
+    self.requestModem = 0   # 0 (nao solicitou) ou 1 (solicitou)
+    self.requestDisk = 0    # 0 (nao solicitou), 1 (solicitou disco 1) ou 2 (solicitou disco 2)
 
     def __init__(self, elements):
         self.timeOfArrival = elements[0]
-        self.type = elements[1]
         self.priority = elements[2]
+        self.type = elements[1]
         self.size = elements[3]
-        self.requestResource1 = elements[4]
-        self.requestResource2 = elements[5]
-        self.requestResource3 = elements[6]
-        self.requestResource4 = elements[7]
+        self.requestPrinter = elements[4]
+        self.requestScanner = elements[5]
+        self.requestModem = elements[6]
+        self.requestDisk = elements[7]
 
     def __int__(self):
         return self.size
