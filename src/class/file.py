@@ -9,7 +9,10 @@ class File:
 '''
     def __init__(self, elements):
         self.name = elements[0]
-        self.size = int(elements[2])
+        if len(elements) == 3:
+            self.size = int(elements[2])
+        else:
+            self.size = int(elements[1])
 
     def __str__(self): # Para utilizar a instrução str(x)
         return self.name
