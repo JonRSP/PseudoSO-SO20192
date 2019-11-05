@@ -6,23 +6,24 @@ from file import File
 structure = SOStructure('')
 print("Processos:")
 for process in structure.processes:
-    print ("id "+ str(process[0])+' dados '+str(process[1]))
+    print ("id "+ str(process)+' dados '+str(structure.processes[process]))
 print("secondary total size: "+str(structure.secondaryMemory.totalSize))
 print("secondary size now: "+str(structure.secondaryMemory.sizeNow))
-print("Memória:")
+print("Memória secundária:")
 print( structure.secondaryMemory.freeMemory)
 print(structure.secondaryMemory.busyMemory)
 print("Recursos disponíveis:")
 print(str(structure.resources))
 print("Ações a serem realizadas:")
-for action in structure.actions:
-    print(str(action))
+for actionlist in structure.actions:
+    for action in structure.actions[actionlist]:
+        print(str(action))
 
-structure.secondaryMemory.addFile(File(['A', 2]), -1)
+structure.secondaryMemory.addFile(File(['A', 2]))
 print( structure.secondaryMemory.freeMemory)
 print(structure.secondaryMemory.busyMemory)
 print("secondary size now: "+str(structure.secondaryMemory.sizeNow))
-structure.secondaryMemory.addFile(File(['A', 2]), -1)
+structure.secondaryMemory.addFile(File(['A', 2]))
 
 structure.secondaryMemory.removeFile('Y')
 print( structure.secondaryMemory.freeMemory)
@@ -34,7 +35,7 @@ print( structure.secondaryMemory.freeMemory)
 print(structure.secondaryMemory.busyMemory)
 print("secondary size now: "+str(structure.secondaryMemory.sizeNow))
 
-structure.secondaryMemory.addFile(File(['B', 3]), -1)
+structure.secondaryMemory.addFile(File(['B', 3]))
 print( structure.secondaryMemory.freeMemory)
 print(structure.secondaryMemory.busyMemory)
 print("secondary size now: "+str(structure.secondaryMemory.sizeNow))

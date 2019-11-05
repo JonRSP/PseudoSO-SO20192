@@ -7,20 +7,10 @@ Cada processo, portanto, cada linha, deve conter os seguintes dados:
 <númerocódigo da impressora requisitada>, <requisição do scanner>, <requisição do modem>, <númerocódigo do disco>
 '''
 class Process:
-    '''
-    self.timeOfArrival = 0
-    self.priority = 0
-    self.timeOfProcessing = 0
-    self.size = 0
-    self.requestPrinter = 0 # 0 (nao solicitou), 1 (solicitou impress 1) ou 2 (solicitou impress 2)
-    self.requestScanner = 0 # 0 (nao solicitou) ou 1 (solicitou)
-    self.requestModem = 0   # 0 (nao solicitou) ou 1 (solicitou)
-    self.requestDisk = 0    # 0 (nao solicitou), 1 (solicitou disco 1) ou 2 (solicitou disco 2)
-'''
     def __init__(self, elements):
         self.timeOfArrival = elements[0]
-        self.priority = elements[2]
-        self.timeOfProcessing = elements[1]
+        self.priority = elements[1]
+        self.timeOfProcessing = elements[2]
         self.size = elements[3]
         self.requestPrinter = elements[4]
         self.requestScanner = elements[5]
@@ -32,3 +22,7 @@ class Process:
 
     def __str__(self):
         return str(self.timeOfArrival)+', '+str(self.priority)+', '+str(self.timeOfProcessing)+', '+str(self.size)+', '+str(self.requestPrinter)+', '+str(self.requestScanner)+', '+str(self.requestModem)+', '+str(self.requestDisk)
+
+    def __eq__(self, other):
+        if isinstance(other, Process):
+            return self.timeOfArrival == other.timeOfArrival and self.priority == other.priority and self.timeOfProcessing == other.timeOfProcessing and self.size == other.size and self.requestPrinter == other.requestPrinter and self.requestScanner == other.requestScanner and self.requestModem == other.requestModem and self.requestDisk == other.requestDisk

@@ -14,9 +14,9 @@ import sys
 class SOStructure:
 
     def __init__(self, file_location):
-        self.processes = []
+        self.processes = {}
         self.primaryMemory = PrimaryMemory(64, 960)
-        self.actions = []
+        self.actions = {} # algo no formato {idProcesso: [ação1, ação2, ...], ...}
         self.resources = Resources()
         self.readProcess(file_location)
         self.readConfiguration(file_location)
@@ -27,7 +27,8 @@ class SOStructure:
             file = open(file_location+"processes.txt", "r") # Tente abrir
             for line in file: # Para cada linha no arquivo
                 elements = line.split(', ') # Divida na vírgula
-                self.processes.append([processCounter, Process(elements)]) # Crie um novo processo na lista de processos
+                self.processes[processCounter] = Process(elements) # Crie um novo processo no dicionário de processos
+                self.primaryMemory.addProcess(self.processes[processCounter], processCounter)
                 processCounter += 1 # Aumenta o contador do ID
             file.close() # Tente fechar
         except:
@@ -52,6 +53,9 @@ class SOStructure:
                 self.secondaryMemory.addFile(newFile, int(elements[1])) # Crie um novo arquivo na memória secundária
             else:
                 elements = line.split(', ') # Divida na vírgula
-                self.actions.append(Action(elements)) # Crie uma nova ação de um processo
+                if(elements[0] in self.actions):
+                    self.actions[elements[0]].append(Action(elements)) # Crie uma nova ação de um processo
+                else:
+                    self.actions[elements[0]] = [Action(elements)]
             lineCounter += 1
         file.close()

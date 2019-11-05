@@ -7,30 +7,30 @@ class SecondaryMemory:
     def __init__(self, size):
         self.totalSize = int(size)
         self.sizeNow = int(size)
-        self.memoryList = []
         self.freeMemory = {0:size}
-        self.busyMemory = {} # preenche a lista de memória secundária, com tuplas (vazio, livre), vazio vai armazenar qual arquivo
+        self.busyMemory = {} # algo no formato {"nomeArquivo":(posição, tamanho), ....}
 
-    def addFile(self, file, initialConfig): # initialConfig >= 0 implica que é configuração inicial e corresponde à posição inicial do SO
+    def addFile(self, file, initialConfig = -1): # initialConfig >= 0 implica que é configuração inicial e corresponde à posição inicial do SO
         if(str(file) in self.busyMemory):
             print("O arquivo "+str(file) + " já existe")
-            return 1
-        if(self.sizeNow < int(file)): # O espaço total disponível não armazena o arquivo
+            return 2
+        if(self.sizeNow < int(file)): # O espaço disponível não armazena o arquivo
             print("Não há espaço para criar o arquivo "+str(file))
             return 1
         else:
             position = self.fileFit(file, initialConfig) # Verificar se nos espaços disponíveis há espaço contíguo para armazenar o arquivo
             if(position[0] >= 0):
                 if(position[0] == position[1]):
-                    if((self.freeMemory[position[1]] - (position[0] - position[1]) - int(file) + 1) > 0): # Se sobra espaço
+                    if((self.freeMemory[position[1]] - (position[0] - position[1]) - int(file)) > 0): # Se sobra espaço
                         self.freeMemory[position[0] + int(file)] = self.freeMemory[position[0]] - int(file) # Cria nova entrada no dicionário
                     del self.freeMemory[position[1]] # Remove entrada anterior
-                else:
-                    if((self.freeMemory[position[1]] - (position[0] - position[1]) - int(file) + 1) > 0): # Se sobra espaço
+                else: # apenas se é na configuração inicial e no meio de um grupo de blocos livres
+                    if((self.freeMemory[position[1]] - (position[0] - position[1]) - int(file) ) > 0): # Se sobra espaço
                         self.freeMemory[position[0] + int(file)] = self.freeMemory[position[1]] - ((position[0] - position[1]) + int(file)) # Cria nova entrada no dicionário
                     self.freeMemory[position[1]] = position[0] - position[1]# Redefine o tamanho livre daquela entrada
                 self.busyMemory[str(file)] = (position[0], int(file))
                 self.sizeNow -= int(file)
+                return 0
             else: # não há posição inicial que caiba o arquivo
                 print("Não há espaço para criar o arquivo "+str(file))
                 return 1
@@ -55,10 +55,15 @@ class SecondaryMemory:
             del self.freeMemory[(data[0] + data[1])] # apagar o bloco de memória livre
             data = (data[0], data[1] + extra) # somar o tamanho do arquivo deletado com o espaço do outro bloco de memória livre
         if(data[0] > 0): # se não é o bloco inicial
+            flag = 0
             for item in sorted(self.freeMemory.keys(), reverse=True):
                 if(item < data[0]):
                     index = item # acha qual é o bloco anterior
+                    flag = 1
                     break
+            if flag == 0:
+                index = data[0]
+                self.freeMemory[index] = 0
         else:
             index = data[0] # é o bloco inicial
             self.freeMemory[index] = 0 # cria o bloco inicial
