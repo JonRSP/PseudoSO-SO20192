@@ -7,7 +7,7 @@ class SecondaryMemory:
     def __init__(self, size):
         self.totalSize = int(size)
         self.sizeNow = int(size)
-        self.freeMemory = {0:size}
+        self.freeMemory = {0:size} # algo no formato {posição:tamanhoLivre, ....}
         self.busyMemory = {} # algo no formato {"nomeArquivo":(posição, tamanho), ....}
 
     def addFile(self, file, initialConfig = -1): # initialConfig >= 0 implica que é configuração inicial e corresponde à posição inicial do SO

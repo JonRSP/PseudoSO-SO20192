@@ -11,10 +11,10 @@ class PrimaryMemory:
         self.realTimeSizeNow = realTimeSize
         self.userSize = userSize
         self.userSizeNow = userSize
-        self.freeRealTimeMemory = {0:realTimeSize}
-        self.busyRealTimeMemory = {}
-        self.freeUserMemory = {0:userSize}
-        self.busyUserMemory = {}
+        self.freeRealTimeMemory = {0:realTimeSize} # algo no formato {posição:tamanhoLivre, ....}
+        self.busyRealTimeMemory = {} # algo no formato {processID:(posição, tamanho), ....}
+        self.freeUserMemory = {0:userSize} # algo no formato {posição:tamanhoLivre, ....}
+        self.busyUserMemory = {} # algo no formato {processID:(posição, tamanho), ....}
         self.notAllocatedProcess = []
 
     def addProcess(self, process, processID):

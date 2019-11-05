@@ -14,7 +14,7 @@ import sys
 class SOStructure:
 
     def __init__(self, file_location):
-        self.processes = {}
+        self.processes = {} # algo no padrão {idProcesso:Processo,....}
         self.primaryMemory = PrimaryMemory(64, 960)
         self.actions = {} # algo no formato {idProcesso: [ação1, ação2, ...], ...}
         self.resources = Resources()
