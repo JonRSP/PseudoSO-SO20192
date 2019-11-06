@@ -8,14 +8,14 @@ Cada processo, portanto, cada linha, deve conter os seguintes dados:
 '''
 class Process:
     def __init__(self, elements):
-        self.timeOfArrival = elements[0]
-        self.priority = elements[1]
-        self.timeOfProcessing = elements[2]
-        self.size = elements[3]
-        self.requestPrinter = elements[4]
-        self.requestScanner = elements[5]
-        self.requestModem = elements[6]
-        self.requestDisk = elements[7]
+        self.timeOfArrival = int(elements[0])
+        self.priority = int(elements[1])
+        self.timeOfProcessing = int(elements[2])
+        self.size = int(elements[3])
+        self.requestPrinter = int(elements[4])
+        self.requestScanner = int(elements[5])
+        self.requestModem = int(elements[6])
+        self.requestDisk = int(elements[7])
 
     def __int__(self):
         return self.size
