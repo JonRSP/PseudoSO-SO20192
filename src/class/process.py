@@ -19,7 +19,7 @@ class Process:
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
 
-    def requestResources(self)
+    def requestResources(self):
         Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.ID)
 
     def __int__(self):
