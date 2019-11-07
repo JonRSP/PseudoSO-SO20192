@@ -14,6 +14,9 @@ class Resources():
             else:
                 self.availableResourceDic[item] = 1
 
+    def requestResources(self, resourcesToAllocate, processID):
+        pass
+
     def __str__(self):
         returnString = ''
         for item in self.availableResourceDic:

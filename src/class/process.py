@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from resource import Resources
 '''
 O processo é uma entidade que realiza ações, pode ser do tipo tempo real ou de usuário.
 
@@ -7,7 +8,8 @@ Cada processo, portanto, cada linha, deve conter os seguintes dados:
 <númerocódigo da impressora requisitada>, <requisição do scanner>, <requisição do modem>, <númerocódigo do disco>
 '''
 class Process:
-    def __init__(self, elements):
+    def __init__(self, elements, processID = 0):
+        self.ID = processID
         self.timeOfArrival = int(elements[0])
         self.priority = int(elements[1])
         self.timeOfProcessing = int(elements[2])
@@ -16,6 +18,9 @@ class Process:
         self.requestScanner = int(elements[5])
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
+
+    def requestResources(self)
+        Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.ID)
 
     def __int__(self):
         return self.size
