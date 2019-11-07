@@ -3,6 +3,7 @@ from primaryMemory import PrimaryMemory
 from secondaryMemory import SecondaryMemory
 from file import File
 from process import Process
+from resource import Resources
 
 class TestPrimaryMemory(unittest.TestCase):
     #@unittest.skip("teste1")
@@ -336,6 +337,20 @@ class TestSecondaryMemory(unittest.TestCase):
         self.assertEqual(self.secondaryMemory.freeMemory, {0:10})
         self.assertEqual(self.secondaryMemory.busyMemory, {})
 
+class TestResources(unittest.TestCase):
+    def setUp(self):
+        self.resources = Resources()
+
+    def test_allocation_success(self):
+        result = self.resources.requestResources([1,0,0,1],1)
+        self.assertEqual(result,True)
+        self.assertEqual(self.resources.busyResource,{'printer':[1], 'scanner':[], 'modem':[], 'disk':[1]})
+
+    def test_allocation_fail(self):
+        result = self.resources.requestResources([1,1,1,1],1)
+        self.assertEqual(result,True)
+        result = self.resources.requestResources([1,1,1,1],0)
+        self.assertEqual(result,False)
 
 if __name__ == '__main__':
     unittest.main()
