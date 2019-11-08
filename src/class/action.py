@@ -11,6 +11,7 @@ class Action:
 
 
     def __init__(self, elements):
+        self.finishedAction = 0
         self.info = len(elements)
         self.processID = elements[0]
         self.operationCode = elements[1]
@@ -26,20 +27,4 @@ class Action:
         else:
             return str(self.processID)+', '+str(self.operationCode)+', '+str(self.fileName)+', '+str(self.numberOfBlocks)+', '+str(self.numberOfOperation)
 
-    def doAction(self, action, process, secondaryMemory):
-        if (action.operationCode == 0):
-            # cria
-            added = secondaryMemory.addFile(File(action.fileName, action.numberOfBlocks))
-            if(added == 1):
-                print("Não há espaço para criar o arquivo "+action.fileName)
-            elif(added == 2):
-                print("O arquivo "+ action.fileName + " já existe")
-            else:
-                print('Arquivo '+ action.fileName +' criado com sucesso.')
-        else:
-            # deleta 
-            deleted = secondaryMemory.removeFile(action.fileName)
-            if(deleted == 1):
-                print('O processo ' + process.id  + ' não pode deletar o arquivo' + action.fileName + 'porque não existe esse arquivo.')
-            else:
-                print('Arquivo '+ action.fileName +' deletado com sucesso.')
+    

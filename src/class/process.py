@@ -9,7 +9,7 @@ Cada processo, portanto, cada linha, deve conter os seguintes dados:
 '''
 class Process:
     def __init__(self, elements, processID = 0):
-        self.ID = processID
+        self.id = processID
         self.timeOfArrival = int(elements[0])
         self.priority = int(elements[1])
         self.timeOfProcessing = int(elements[2])
