@@ -28,7 +28,7 @@ class SOStructure:
             for line in file: # Para cada linha no arquivo
                 elements = line.split(', ') # Divida na vírgula
                 self.processes[processCounter] = Process(elements) # Crie um novo processo no dicionário de processos
-                self.primaryMemory.addProcess(self.processes[processCounter], processCounter)
+                # self.primaryMemory.addProcess(self.processes[processCounter], processCounter)
                 processCounter += 1 # Aumenta o contador do ID
             file.close() # Tente fechar
         except:

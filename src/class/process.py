@@ -16,6 +16,7 @@ class Process:
         self.requestScanner = int(elements[5])
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
+        self.last_queue = None
 
     def __int__(self):
         return self.size
