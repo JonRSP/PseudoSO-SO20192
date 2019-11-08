@@ -8,7 +8,6 @@ class Resources():
     def __init__(self):
         self.auxDic = {0:'printer', 1:'scanner', 2:"modem", 3:'disk'}
         self.busyResource = {'printer':[], 'scanner':[], 'modem':[], 'disk':[]}
-        #self.waitingProcess = {'printer':[], 'scanner':[], 'modem':[], 'disk':[]} # algo nesse formato {'printer':[idProcess,...],'scanner':[processID]}
         self.availableResource = {} # algo nesse formato {'recurso':quantidade}
         self.listOfResourcesToCreate = ['printer', 'printer', 'scanner', 'modem', 'disk', 'disk']
         for item in self.listOfResourcesToCreate:
@@ -28,7 +27,6 @@ class Resources():
                     if resourcesToAllocate[failed] == 1:
                         self.busyResource[self.auxDic[failed]].remove(processID)
                         self.availableResource[self.auxDic[failed]] += 1
-                #self.waitingProcess[self.auxDic[failed]].append(processID)
                 return False
         return True
 

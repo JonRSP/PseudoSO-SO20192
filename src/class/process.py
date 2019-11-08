@@ -20,7 +20,7 @@ class Process:
         self.requestDisk = int(elements[7])
 
     def requestResources(self):
-        Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.ID)
+        return Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.ID)
 
     def __int__(self):
         return self.size
