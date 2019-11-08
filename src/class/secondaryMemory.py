@@ -12,10 +12,10 @@ class SecondaryMemory:
 
     def addFile(self, file, initialConfig = -1): # initialConfig >= 0 implica que é configuração inicial e corresponde à posição inicial do SO
         if(str(file) in self.busyMemory):
-            print("O arquivo "+str(file) + " já existe")
+            # print("O arquivo "+str(file) + " já existe")
             return 2
         if(self.sizeNow < int(file)): # O espaço disponível não armazena o arquivo
-            print("Não há espaço para criar o arquivo "+str(file))
+            # print("Não há espaço para criar o arquivo "+str(file))
             return 1
         else:
             position = self.fileFit(file, initialConfig) # Verificar se nos espaços disponíveis há espaço contíguo para armazenar o arquivo
@@ -32,7 +32,7 @@ class SecondaryMemory:
                 self.sizeNow -= int(file)
                 return 0
             else: # não há posição inicial que caiba o arquivo
-                print("Não há espaço para criar o arquivo "+str(file))
+                # print("Não há espaço para criar o arquivo "+str(file))
                 return 1
 
     def fileFit(self, file, initialConfig): # Retorna a posição em que o arquivo cabe, -1 caso não caiba
@@ -48,6 +48,8 @@ class SecondaryMemory:
             return (-1,-1)
 
     def removeFile(self, fileToRemove):
+        if (fileToRemove not in self.busyMemory):
+            return 1 
         data = self.busyMemory[fileToRemove] #armazena os dados do bloco em memória e tamanho
         self.sizeNow += data[1] # aumenta o tamanho atual
         if((data[0] + data[1]) in self.freeMemory): # se a liberação alcança um novo bloco livre
@@ -69,3 +71,4 @@ class SecondaryMemory:
             self.freeMemory[index] = 0 # cria o bloco inicial
         self.freeMemory[index] += data[1] # soma com o número de blocos liberados
         del self.busyMemory[fileToRemove] # remove da lista de memória ocupada
+        return 0
