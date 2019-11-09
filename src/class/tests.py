@@ -360,10 +360,10 @@ class TestActions(unittest.TestCase):
         self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([2, 0, 3, 10, 0, 0, 0, 0]), 2:Process([2, 0, 3, 1, 0, 0, 0, 0]), 3:Process([2, 0, 3, 2, 0, 0, 0, 0]), 4:Process([2, 1, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
         self.actions = {0:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2]),Action([0,1,'A',3]) ],1:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2])]}
     def test_error_actions(self):
-         result = SOStructure.execActions(self, self.actions[0], self.processes[0], self.secondaryMemory)
+         result = SOStructure.execActionsOfProcess(self, self.actions[0], self.processes[0], self.secondaryMemory)
          self.assertEqual(result,1)
     def test_ok_actions(self):
-         result = SOStructure.execActions(self, self.actions[1], self.processes[0], self.secondaryMemory)
+         result = SOStructure.execActionsOfProcess(self, self.actions[1], self.processes[0], self.secondaryMemory)
          self.assertEqual(result,0)
 if __name__ == '__main__':
     unittest.main()

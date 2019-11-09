@@ -5,29 +5,35 @@ O escalonador
 
 from queue import FifoQueue, PriorityQueue
 
-class Scheduler(self):
+class Scheduler:
     def __init__(self):
         self.fifo_queue = FifoQueue()
         self.priority_queue = PriorityQueue()
-        self.time = 0
 
+    #  coloca um processo memoria principal
+    def insertProcessInMemory(self, process):
+        self.primaryMemory.addProcess(process, realTimeProcess.id) # coloca o processo de tempo real na memoria
+        return 0
+
+    # enfileira processo se a fila nao estiver lotada (1000)
     def queueProcess(self, process):
         if (process.priority == 0):
-            self.fifo_queue.push(process)
+            result = self.fifo_queue.push(process)
         else:
-            self.priority_queue.push(process)
+            result = self.priority_queue.push(process)
+        return result
 
 
-    def scheduleProcess(self, process, primaryMemory):
-        # self.primaryMemory.addProcess(process, process.id)
-        if (process.priority == 0):
-            proc = self.fifo_queue.pop()
-            execCPU(proc)
-        else:
-            pass
-    
-    def preemptProcess(self, process):
+    # escalona o processo com maior prioridade para a CPU
+    def scheduleProcess(self):
+        if (not fifo_queue.is_empty):
+            process = fifo_queue.pop()
+        elif (not priority_queue.is_empty):
+            process = priority_queue.pop()
+        return process
 
+
+    #def preemptProcess(self, process):
     # def __int__(self):
     #     return self.size
 
