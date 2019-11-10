@@ -9,7 +9,7 @@ Cada processo, portanto, cada linha, deve conter os seguintes dados:
 '''
 class Process:
     def __init__(self, elements, processID = 0):
-        self.id = processID
+        self.id = int(processID)
         self.timeOfArrival = int(elements[0])
         self.priority = int(elements[1])
         self.timeOfProcessing = int(elements[2])
@@ -18,12 +18,14 @@ class Process:
         self.requestScanner = int(elements[5])
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
+        self.inMemory = 0
 
-    def requestResources(self):
-        return Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.id)
+    def requestResources(self, resources):
+        auxlist = [self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk]
+        return resources.requestResources(auxlist, self.id)
 
-    def freeResources(self):
-        return Resources.freeResources(self.id)
+    def freeResources(self, resources):
+        return resources.freeResources(self.id)
 
     def __int__(self):
         return self.size

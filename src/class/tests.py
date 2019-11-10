@@ -343,11 +343,13 @@ class TestSecondaryMemory(unittest.TestCase):
 class TestResources(unittest.TestCase):
     def setUp(self):
         self.resources = Resources()
+        self.process = Process([2, 0, 3, 64, 0, 0, 0, 0],1)
 
     def test_allocation_success(self):
         result = self.resources.requestResources([1,0,0,1],1)
         self.assertEqual(result,True)
         self.assertEqual(self.resources.busyResource,{'printer':[1], 'scanner':[], 'modem':[], 'disk':[1]})
+        self.process.requestResources(self.resources)
 
     def test_allocation_fail(self):
         result = self.resources.requestResources([1,1,1,1],1)
@@ -403,11 +405,15 @@ class TestScheduler(unittest.TestCase):
 
 class TestSO(unittest.TestCase):
     def setUp(self):
-        self.soStructure = SOStructure("./")
+        self.soStructure = SOStructure("")
         # self.secondaryMemory = SecondaryMemory(10)
-        # self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([2, 0, 3, 10, 0, 0, 0, 0]), 2:Process([2, 0, 3, 1, 0, 0, 0, 0]), 3:Process([2, 0, 0, 2, 0, 0, 0, 0]), 4:Process([2, 1, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
+        self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([3, 0, 4, 64, 0, 0, 0, 0])}
         # self.actions = {0:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2]),Action([0,1,'A',3]) ],1:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2])]}
 
+    def test_assemble_ok(self):
+        self.assertEqual(self.soStructure.processes, self.processes)
+
+    @unittest.skip("pra não fazer agora")
     def test_run_ok(self):
         result = self.soStructure.run()
 

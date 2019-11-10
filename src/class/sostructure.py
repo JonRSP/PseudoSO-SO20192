@@ -57,6 +57,7 @@ class SOStructure:
                 self.secondaryMemory.addFile(newFile, int(elements[1])) # Crie um novo arquivo na memória secundária
             else:
                 elements = line.split(', ') # Divida na vírgula
+                elements[0] = int(elements[0])
                 if(elements[0] in self.actions):
                     if (int(elements[-1]) - int(self.actions[elements[0]][-1].numberOfOperation)) > 1:
                         for i in range(int(self.actions[elements[0]][-1].numberOfOperation)+1, int(elements[-1])):
@@ -111,9 +112,10 @@ class SOStructure:
         while (len(self.processes)>0): # Enquanto nao acabarem os processos
             for procID in self.processes: # percorre a lista de processos
                 process = self.processes[procID]
-                if (process.timeOfArrival <= self.globalTime):
+                if (process.timeOfArrival <= self.globalTime and process.inMemory == 0):
                     added = self.primaryMemory.addProcess(process,process.id) # tenta adicionar processo na memoria
                     if (added == 0): #se conseguir adicionar na memoria
+                        process.inMemory = 1
                         self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto
                 else:
                     break # break ou pass?
@@ -121,7 +123,7 @@ class SOStructure:
                 if (flag == 0):
                     process = self.scheduler.scheduleProcess() # escalona processo mais prioritario
                     flag = 1
-                while(not process.requestResources()): # checar ate encontrar um processo com recurso livre
+                while(not process.requestResources(self.resources)): # checar ate encontrar um processo com recurso livre
                     self.scheduler.queueProcess(process) # processo volta pra fila
                     process = self.scheduler.scheduleProcess() # pega o proximo processo
                 if (process.timeOfArrival <= self.globalTime):
@@ -130,7 +132,7 @@ class SOStructure:
                     self.globalTime += 1
                     if (len(self.actions[process.id]) == 0): # acabaram as acoes do processo
                         print('P'+ str(process.id) +' return SIGINT')
-                        process.freeResources() # libera os recursos
+                        process.freeResources(self.resources) # libera os recursos
                         addedProcessesAfterRemove = removeProcess(process,process.id) # remove da memoria principal
                         if (addedProcessesAfterRemove[0] == 0):
                             for processID in addedProcessesAfterRemove[1]:
