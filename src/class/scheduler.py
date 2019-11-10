@@ -12,7 +12,7 @@ class Scheduler:
 
     #  coloca um processo memoria principal
     def insertProcessInMemory(self, process):
-        self.primaryMemory.addProcess(process, realTimeProcess.id) # coloca o processo de tempo real na memoria
+        self.primaryMemory.addProcess(process, process.id) # coloca o processo de tempo real na memoria
         return 0
 
     # enfileira processo se a fila nao estiver lotada (1000)
@@ -33,7 +33,13 @@ class Scheduler:
         return process
 
 
-    #def preemptProcess(self, process):
+    def preemptProcess(self, process, globalTime):
+        if ((process.priority > 0) and (not self.fifo_queue.is_empty()) and (globalTime >= self.fifo_queue.pick().timeOfArrival)): #se chegou um processo de tempo real
+            if (process.priority > 1): # se o processo puder ser preemptado, ou seja, é de usuário
+                process.priority -= 1 # aumenta a prioridade
+                self.priority_queue.push(process) # volta pra fila com sua respectiva prioridade
+                process = self.fifo_queue.pop() # pega o processo de tempo real prioritario
+        return process
     # def __int__(self):
     #     return self.size
 

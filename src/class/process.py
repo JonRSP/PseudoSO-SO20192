@@ -18,7 +18,6 @@ class Process:
         self.requestScanner = int(elements[5])
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
-        self.inCPU = 0
 
     def requestResources(self):
         return Resources.requestResources([self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk], self.id)

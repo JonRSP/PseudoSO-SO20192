@@ -20,7 +20,7 @@ class SOStructure:
         self.actions = {} # algo no formato {idProcesso: [ação1, ação2, ...], ...}
         self.resources = Resources()
         self.globalTime = 0
-        self.CPUBusy = 0
+        self.scheduler = Scheduler()
         self.readProcess(file_location)
         self.readConfiguration(file_location)
 
@@ -70,9 +70,8 @@ class SOStructure:
 
 
 
-    def execActionsOfProcess(self, actions, process, secondaryMemory):
+    def execActions(self, actions, process, secondaryMemory):
         for action in actions:
-            CPUBusy = 1
             if (process.id == action.processID): #Se a acao eh do processo
                 if (process.timeOfProcessing > 0): # se o processo ainda tem tempo de CPU
                     if (action.finishedAction == 0): # se a action ainda nao foi executada
@@ -103,24 +102,26 @@ class SOStructure:
                             print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - SUCESSO CPU')
                         process.timeOfProcessing -= 1
                         action.finishedAction = 1
-                        #if preemptProcess(process):
-                        #    return 2
+                        # self.globalTime += 1
+                        # preempcao, caso tenha, haverá a troca de processo
+                        # process = self.scheduler.preemptProcess(process,self.globalTime)
                 else: # erro tempo de CPU do processo acabou
-                    print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - FALHA ')
-                    print("O processo "+ str(process.id) + ' esgotou seu tempo de CPU.')
-                    return 1
+                        print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - FALHA ')
+                        print("O processo "+ str(process.id) + ' esgotou seu tempo de CPU.')
+                        return 1
         # finalizou acoes do processo
         print('P'+ str(process.id) +' return SIGINT')
-        process.inCPU = 0
-        process.freeResources
-        # removeProcess(process,process.id)
+        # process.freeResources() # libera os recursos
+        # removeProcess(process,process.id) # remove da memoria principal
+        del self.processes[process.id] # deleta o processo da lista de processos
         return 0
 
-        def run(self):
-            for process in self.processes:
-                if (process.timeOfArrival == self.globalTime):
-                    insertProcessInMemory(process,process.id)
-                    queueProcess(process)
-                    scheduleProcess(process)
-                    execActionsOfProcess(self.actions, process, self.secondaryMemory)
-                self.globalTime += 1
+    def run(self):
+        while (len(self.processes)>0):
+            if (process.timeOfArrival >= self.globalTime):
+                if(process.requestResources()): # checar se os recursos estão liberados
+                    # self.primaryMemory.addProcess(process,process.id) # Adiciona processo na memoria (quando fazer??)
+                    # self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto (deve sempre ser feito após sucesso na inserção de processo em memoria)
+                    process = self.scheduler.scheduleProcess() # Escalona o processo mais prioritario
+                    self.execActions(self.actions, process, self.secondaryMemory) #executa acoes de um processo, pode ser preemptado
+                    self.globalTime += 1
