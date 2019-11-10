@@ -108,10 +108,18 @@ class PrimaryMemory:
             self.userSizeNow = sizeNow
             self.busyUserMemory = busyMemory
         if (len(self.notAllocatedProcess) > 0):
-            self.retryAllocation()
+            return self.retryAllocation()
+        else:
+            return (1, [])
 
     def retryAllocation(self):
+        allocatedProcesses = []
         for item in self.notAllocatedProcess:
             flag = self.addProcess(item[1], item[0])
             if flag == 0: # sucesso ao tentar a alocação novamente
                 self.notAllocatedProcess.remove(item)
+                allocatedProcesses.append(item[0])
+        if len(allocatedProcesses) > 0:
+            return (0, allocatedProcesses)
+        else:
+            return (1, allocatedProcesses)
