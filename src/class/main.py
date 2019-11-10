@@ -39,3 +39,5 @@ structure.secondaryMemory.addFile(File(['B', 3]))
 print( structure.secondaryMemory.freeMemory)
 print(structure.secondaryMemory.busyMemory)
 print("secondary size now: "+str(structure.secondaryMemory.sizeNow))
+
+# structure.run()

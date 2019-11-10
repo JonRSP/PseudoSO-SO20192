@@ -13,7 +13,7 @@ import heapq # This module provides an implementation of the heap queue algorith
 
 class FifoQueue(deque):
     def __init__(self):
-        self.fifo_queue = []
+        self.fifo_queue = deque()
 
     def push(self,process):
         if(len(self.fifo_queue) < 1000):
@@ -33,9 +33,9 @@ class FifoQueue(deque):
 
 class PriorityQueue(deque):
     def __init__(self):
-        self.first_queue = []
-        self.second_queue = []
-        self.third_queue = []
+        self.first_queue = deque()
+        self.second_queue = deque()
+        self.third_queue = deque()
 
     def push(self,process):
         if (process.priority==1):
@@ -66,7 +66,7 @@ class PriorityQueue(deque):
             return self.third_queue.popleft()
 
     def is_empty(self):
-        return ((len(self.first_queue)  == 0) and (len(self.second_queue)  == 0) and (len(self.thrid_queue)  == 0))
+        return ((len(self.first_queue)  == 0) and (len(self.second_queue)  == 0) and (len(self.third_queue)  == 0))
 
     def pick(self):
         if (not self.first_queue.is_empty):
@@ -74,4 +74,4 @@ class PriorityQueue(deque):
         elif (not self.second_queue.is_empty):
             return self.second_queue[0]
         else:
-            return self.thrid_queue[0]
+            return self.third_queue[0]

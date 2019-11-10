@@ -6,6 +6,7 @@ from action import Action
 from file import File
 from process import Process
 from resource import Resources
+from scheduler import Scheduler
 
 class TestPrimaryMemory(unittest.TestCase):
     #@unittest.skip("teste1")
@@ -357,13 +358,60 @@ class TestResources(unittest.TestCase):
 class TestActions(unittest.TestCase):
     def setUp(self):
         self.secondaryMemory = SecondaryMemory(10)
-        self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([2, 0, 3, 10, 0, 0, 0, 0]), 2:Process([2, 0, 3, 1, 0, 0, 0, 0]), 3:Process([2, 0, 3, 2, 0, 0, 0, 0]), 4:Process([2, 1, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
+        self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([2, 0, 3, 10, 0, 0, 0, 0]), 2:Process([2, 0, 3, 1, 0, 0, 0, 0]), 3:Process([2, 0, 0, 2, 0, 0, 0, 0]), 4:Process([2, 1, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
         self.actions = {0:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2]),Action([0,1,'A',3]) ],1:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2])]}
-    def test_error_actions(self):
-         result = SOStructure.execActions(self, self.actions[0], self.processes[0], self.secondaryMemory)
+    def test_error_action_timeout(self):
+         result = SOStructure.execAction(self, self.actions[0][0], self.processes[3], self.secondaryMemory)
          self.assertEqual(result,1)
-    def test_ok_actions(self):
-         result = SOStructure.execActions(self, self.actions[1], self.processes[0], self.secondaryMemory)
+    def test_ok_action(self):
+         result = SOStructure.execAction(self, self.actions[1][0], self.processes[0], self.secondaryMemory)
          self.assertEqual(result,0)
+
+class TestScheduler(unittest.TestCase):
+    def setUp(self):
+        self.scheduler = Scheduler()
+        self.processes = {0:Process([0, 1, 3, 64, 0, 0, 0, 0]), 1:Process([1, 0, 3, 10, 0, 0, 0, 0]), 2:Process([0, 2, 3, 1, 0, 0, 0, 0]), 3:Process([0, 3, 0, 2, 0, 0, 0, 0]), 4:Process([2, 0, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
+
+    def test_queueProcess_ok(self):
+         result1 = self.scheduler.queueProcess(self.processes[0])
+         result2 = self.scheduler.queueProcess(self.processes[1])
+         result3 = self.scheduler.queueProcess(self.processes[2])
+         result4 = self.scheduler.queueProcess(self.processes[3])
+         self.assertEqual(result4,0)
+
+    def test_scheduleProcess_ok(self):
+         result1 = self.scheduler.queueProcess(self.processes[0])
+         result2 = self.scheduler.queueProcess(self.processes[1])
+         result3 = self.scheduler.queueProcess(self.processes[2])
+         result4 = self.scheduler.queueProcess(self.processes[3])
+         result4 = self.scheduler.queueProcess(self.processes[4])
+
+         process = self.scheduler.scheduleProcess()
+         process = self.scheduler.scheduleProcess()
+         result = (process == self.processes[4])
+         self.assertEqual(result,True)
+
+    def test_preemptProcess1_ok(self):
+         result1 = self.scheduler.queueProcess(self.processes[0])
+         process = self.scheduler.scheduleProcess()
+         result2 = self.scheduler.queueProcess(self.processes[1])
+         process2 = self.scheduler.preemptProcess(process,1)
+
+         result = (process2 == self.processes[0])
+         self.assertEqual(result,True)
+
+
+class TestSO(unittest.TestCase):
+    def setUp(self):
+        self.soStructure = SOStructure("./")
+        # self.secondaryMemory = SecondaryMemory(10)
+        # self.processes = {0:Process([2, 0, 3, 64, 0, 0, 0, 0]), 1:Process([2, 0, 3, 10, 0, 0, 0, 0]), 2:Process([2, 0, 3, 1, 0, 0, 0, 0]), 3:Process([2, 0, 0, 2, 0, 0, 0, 0]), 4:Process([2, 1, 3, 64, 0, 0, 0, 0]), 5:Process([2, 1, 3, 20, 0, 0, 0, 0]), 6:Process([2, 1, 3, 10, 0, 0, 0, 0]), 7:Process([2, 1, 3, 5, 0, 0, 0, 0]), 8:Process([2, 1, 3, 5, 0, 0, 0, 0]), 9:Process([2, 1, 3, 1, 0, 0, 0, 0]), 10:Process([2, 0, 3, 5, 0, 0, 0, 0]), 11:Process([2, 0, 3, 5, 0, 0, 0, 0]), 12:Process([2, 0, 3, 7, 0, 0, 0, 0])}
+        # self.actions = {0:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2]),Action([0,1,'A',3]) ],1:[Action([0,0,'A',3,0]),Action([0,0,'A',3,1]),Action([0,1,'B',2])]}
+
+    def test_run_ok(self):
+        result = self.soStructure.run()
+
+        self.assertEqual(result,0)
+
 if __name__ == '__main__':
     unittest.main()
