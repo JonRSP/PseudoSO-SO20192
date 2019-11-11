@@ -399,6 +399,15 @@ class TestScheduler(unittest.TestCase):
          result2 = self.scheduler.queueProcess(self.processes[1])
          process2 = self.scheduler.preemptProcess(process,1)
 
+         result = (process2 == self.processes[1])
+         self.assertEqual(result,True)
+
+    def test_preemptProcess2_ok(self):
+         result1 = self.scheduler.queueProcess(self.processes[2])
+         process = self.scheduler.scheduleProcess()
+         result2 = self.scheduler.queueProcess(self.processes[0])
+         process2 = self.scheduler.preemptProcess(process,1)
+
          result = (process2 == self.processes[0])
          self.assertEqual(result,True)
 

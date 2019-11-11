@@ -9,7 +9,6 @@ Para procesos de usuário, teremos 3 filas com múltiplas prioridades.
 '''
 
 from collections import deque
-import heapq # This module provides an implementation of the heap queue algorithm, also known as the priority queue algorithm
 
 class FifoQueue(deque):
     def __init__(self):
@@ -69,9 +68,9 @@ class PriorityQueue(deque):
         return ((len(self.first_queue)  == 0) and (len(self.second_queue)  == 0) and (len(self.third_queue)  == 0))
 
     def pick(self):
-        if (not self.first_queue.is_empty):
-            return self.fifo_queue[0]
-        elif (not self.second_queue.is_empty):
+        if (len(self.first_queue) > 0):
+            return self.first_queue[0]
+        elif (len(self.second_queue) > 0):
             return self.second_queue[0]
         else:
             return self.third_queue[0]

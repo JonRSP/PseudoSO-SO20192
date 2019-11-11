@@ -29,9 +29,15 @@ class Scheduler:
 
 
     def preemptProcess(self, process, globalTime):
-        if ((process.priority > 0) and (not self.fifo_queue.is_empty()) and (globalTime >= self.fifo_queue.pick().timeOfArrival)): #se chegou um processo de tempo real
-            if (process.priority > 1): # se o processo puder ser preemptado, ou seja, é de usuário
-                process.priority -= 1 # aumenta a prioridade
+        if (process.priority > 0): #se o processo eh de usuário
+            if ((not self.fifo_queue.is_empty()) and (globalTime >= self.fifo_queue.pick().timeOfArrival)): # se chegou um proc de tempo real
+                if (process.priority > 1): # se a prioridade ja nao eh máxima
+                    process.priority -= 1 # aumenta a prioridade
                 self.priority_queue.push(process) # volta pra fila com sua respectiva prioridade
                 process = self.fifo_queue.pop() # pega o processo de tempo real prioritario
+            elif((not self.priority_queue.is_empty()) and (globalTime >= self.priority_queue.pick().timeOfArrival) and (process.priority > self.priority_queue.pick().priority)):
+                if (process.priority > 1): # se a prioridade ja nao eh máxima
+                    process.priority -= 1 # aumenta a prioridade
+                self.priority_queue.push(process) # volta pra fila com sua respectiva prioridade
+                process = self.priority_queue.pop() # pega o processo de usuario prioritario
         return process
