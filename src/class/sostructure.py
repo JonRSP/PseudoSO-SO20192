@@ -35,7 +35,7 @@ class SOStructure:
                 processCounter += 1 # Aumenta o contador do ID
             file.close() # Tente fechar
         except:
-            sys.exit("'processes.txt' file does not exist") # Se não existir saia
+            sys.exit("'processes2.txt' file does not exist") # Se não existir saia
 
 
     def readConfiguration(self,file_location):
@@ -157,7 +157,7 @@ class SOStructure:
             while(not process.requestResources(self.resources)): # checar ate encontrar um processo com recurso livre
                 self.scheduler.queueProcess(process) # processo volta pra fila
                 process = self.scheduler.scheduleProcess() # pega o proximo processo
-            if (process.timeOfArrival <= self.globalTime):
+            if (process.timeOfArrival <= self.globalTime and (process.id in self.primaryMemory.busyUserMemory or process.id in self.primaryMemory.busyRealTimeMemory)):
                 if (process.id in self.actions):
                     self.dispatcher(process, self.primaryMemory)
                     executed = self.execAction(self.actions[process.id][0], process, self.secondaryMemory) #executa acoes de um processo
