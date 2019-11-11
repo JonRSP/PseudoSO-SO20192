@@ -32,7 +32,7 @@ class PrimaryMemory:
             print("Tamanho total da memória é insuficiente para o processo")
             return 2
         if(sizeNow < int(process)): # O espaço livre disponível não armazena o processo
-            print("Não há espaço para criar o processo " + str(processID) + ". Será tentado novamente mais tarde")
+            print("Não há espaço para criar o processo " + str(processID) + " na memória. Será tentado novamente mais tarde")
             if( (processID,process) not in self.notAllocatedProcess):
                 self.notAllocatedProcess.append((processID, process))
             return 1

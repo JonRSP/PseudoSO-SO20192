@@ -13,6 +13,7 @@ class Process:
         self.timeOfArrival = int(elements[0])
         self.priority = int(elements[1])
         self.timeOfProcessing = int(elements[2])
+        self.timeOfProcessingAux = self.timeOfProcessing
         self.size = int(elements[3])
         self.requestPrinter = int(elements[4])
         self.requestScanner = int(elements[5])

@@ -69,10 +69,25 @@ class SOStructure:
             lineCounter += 1
         file.close()
 
+    def dispatcher(self, process, primaryMemory):
+        print("Dispatcher =>")
+        print("\tPID: %d" % process.id)
 
+        if(process.priority == 0):
+            print("\toffset: %d" % primaryMemory.busyRealTimeMemory[process.id][0])
+        else:
+            print("\toffset: %d" % primaryMemory.busyUserMemory[process.id][0])
+
+        print("\tblocks: %d" % process.size)
+        print("\tpriority: %d" % process.priority)
+        print("\ttime: %d" % process.timeOfProcessing)
+        print("\tprinter: %d" % process.requestPrinter)
+        print("\tscanner: %d" % process.requestScanner)
+        print("\tmodem: %d" % process.requestModem)
+        print("\tdrive: %d" % process.requestDisk)
 
     def execAction(self, action, process, secondaryMemory):
-        if (process.timeOfProcessing > 0): # se o processo ainda tem tempo de CPU
+        if (process.timeOfProcessingAux > 0): # se o processo ainda tem tempo de CPU
             if (action.operationCode == 0): # Se a action eh para Criar arquivo
                 # cria
                 added = secondaryMemory.addFile(File([action.fileName, action.numberOfBlocks]))
@@ -100,7 +115,7 @@ class SOStructure:
                     print('O processo '+ str(process.id)+ ' deletou o arquivo '+ action.fileName +'.')
             else: # Se action eh da CPU (Dummy) Opcode = 2
                 print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - SUCESSO CPU')
-            process.timeOfProcessing -= 1
+            process.timeOfProcessingAux -= 1
             action.finishedAction = 1
         else: # erro tempo de CPU do processo acabou
                 print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - FALHA ')
@@ -121,6 +136,7 @@ class SOStructure:
                         if (added == 0): #se conseguir adicionar na memoria
                             process.inMemory = 1
                             self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto
+                            self.dispatcher(process, self.primaryMemory)
                 else:
                     pass # break ou pass?
             if(id in self.processes):
@@ -150,6 +166,7 @@ class SOStructure:
                         for processID in addedProcessesAfterRemove[1]:
                             self.scheduler.queueProcess(self.processes[processID])
                             self.processes[processID].inMemory = 1
+                            self.dispatcher(self.processes[processID], self.primaryMemory)
                     del self.processes[process.id] # deleta o processo da lista de processos
                     flag = 0
                 else:
