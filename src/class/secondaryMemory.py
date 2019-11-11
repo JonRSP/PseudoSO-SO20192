@@ -49,7 +49,7 @@ class SecondaryMemory:
 
     def removeFile(self, fileToRemove):
         if (fileToRemove not in self.busyMemory):
-            return 1 
+            return 1
         data = self.busyMemory[fileToRemove] #armazena os dados do bloco em memória e tamanho
         self.sizeNow += data[1] # aumenta o tamanho atual
         if((data[0] + data[1]) in self.freeMemory): # se a liberação alcança um novo bloco livre
@@ -72,3 +72,18 @@ class SecondaryMemory:
         self.freeMemory[index] += data[1] # soma com o número de blocos liberados
         del self.busyMemory[fileToRemove] # remove da lista de memória ocupada
         return 0
+
+    def dump(self):
+        print("Memória ocupada em disco:")
+        for item in self.busyMemory:
+            if self.busyMemory[item][1] > 1:
+                print("Arquivo " + item + " do bloco " + str(self.busyMemory[item][0]) + " ao bloco " + str(self.busyMemory[item][0] + self.busyMemory[item][1] - 1))
+            else:
+                print("Arquivo " + item + " no bloco " + str(self.busyMemory[item][0]))
+
+        print("Memória disponível em disco:")
+        for item in self.freeMemory:
+            if self.freeMemory[item] > 1:
+                print("Do bloco " + str(item) + " ao bloco " + str(item + self.freeMemory[item] - 1))
+            else:
+                print("No bloco " + str(item))

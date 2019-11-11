@@ -27,7 +27,7 @@ class SOStructure:
     def readProcess(self,file_location):
         processCounter = 0 # Contador do ID do processo
         try:
-            file = open(file_location+"processes.txt", "r") # Tente abrir
+            file = open(file_location+"processes2.txt", "r") # Tente abrir
             for line in file: # Para cada linha no arquivo
                 elements = line.split(', ') # Divida na vírgula
                 self.processes[processCounter] = Process(elements, processCounter) # Crie um novo processo no dicionário de processos
@@ -42,7 +42,7 @@ class SOStructure:
         lineCounter = 0
         flag = 0
         try:
-            file = open(file_location+"files.txt", "r") # Tente abrir
+            file = open(file_location+"files2.txt", "r") # Tente abrir
         except:
             sys.exit("'files.txt' file does not exist") # Se não existir saia
         for line in file: # Para cada linha no arquivo
@@ -67,24 +67,30 @@ class SOStructure:
                 else:
                     self.actions[elements[0]] = [Action(elements)]
             lineCounter += 1
+        listAux = []
+        for process in self.processes:
+            if process not in self.actions:
+                listAux.append(process)
+        for id in listAux:
+            del self.processes[id]
         file.close()
 
     def dispatcher(self, process, primaryMemory):
-        print("Dispatcher =>")
-        print("\tPID: %d" % process.id)
-
-        if(process.priority == 0):
-            print("\toffset: %d" % primaryMemory.busyRealTimeMemory[process.id][0])
-        else:
-            print("\toffset: %d" % primaryMemory.busyUserMemory[process.id][0])
-
-        print("\tblocks: %d" % process.size)
-        print("\tpriority: %d" % process.priority)
-        print("\ttime: %d" % process.timeOfProcessing)
-        print("\tprinter: %d" % process.requestPrinter)
-        print("\tscanner: %d" % process.requestScanner)
-        print("\tmodem: %d" % process.requestModem)
-        print("\tdrive: %d" % process.requestDisk)
+        if(process.tried < 2):
+            print("Dispatcher =>")
+            print("\tPID: %d" % process.id)
+            if(process.priority == 0):
+                print("\toffset: %d" % primaryMemory.busyRealTimeMemory[process.id][0])
+            else:
+                print("\toffset: %d" % primaryMemory.busyUserMemory[process.id][0])
+            print("\tblocks: %d" % process.size)
+            print("\tpriority: %d" % process.priority)
+            print("\ttime: %d" % process.timeOfProcessing)
+            print("\tprinter: %d" % process.requestPrinter)
+            print("\tscanner: %d" % process.requestScanner)
+            print("\tmodem: %d" % process.requestModem)
+            print("\tdrive: %d" % process.requestDisk)
+            process.tried = 2
 
     def execAction(self, action, process, secondaryMemory):
         if (process.timeOfProcessingAux > 0): # se o processo ainda tem tempo de CPU
@@ -136,7 +142,7 @@ class SOStructure:
                         if (added == 0): #se conseguir adicionar na memoria
                             process.inMemory = 1
                             self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto
-                            self.dispatcher(process, self.primaryMemory)
+                            #self.dispatcher(process, self.primaryMemory)
                 else:
                     pass # break ou pass?
             if(id in self.processes):
@@ -152,13 +158,15 @@ class SOStructure:
                 self.scheduler.queueProcess(process) # processo volta pra fila
                 process = self.scheduler.scheduleProcess() # pega o proximo processo
             if (process.timeOfArrival <= self.globalTime):
-                executed = self.execAction(self.actions[process.id][0], process, self.secondaryMemory) #executa acoes de um processo
-                if(executed == 0):
-                    self.actions[process.id].remove(self.actions[process.id][0])
-                else:
-                    self.actions[process.id] = []
-                self.globalTime += 1
-                if (len(self.actions[process.id]) == 0): # acabaram as acoes do processo
+                if (process.id in self.actions):
+                    self.dispatcher(process, self.primaryMemory)
+                    executed = self.execAction(self.actions[process.id][0], process, self.secondaryMemory) #executa acoes de um processo
+                    if(executed == 0):
+                        self.actions[process.id].remove(self.actions[process.id][0])
+                    else:
+                        self.actions[process.id] = []
+                    self.globalTime += 1
+                if ((process.id in self.actions) and len(self.actions[process.id]) == 0): # acabaram as acoes do processo
                     print('P'+ str(process.id) +' return SIGINT')
                     process.freeResources(self.resources) # libera os recursos
                     addedProcessesAfterRemove = self.primaryMemory.removeProcess(process,process.id) # remove da memoria principal
@@ -166,7 +174,7 @@ class SOStructure:
                         for processID in addedProcessesAfterRemove[1]:
                             self.scheduler.queueProcess(self.processes[processID])
                             self.processes[processID].inMemory = 1
-                            self.dispatcher(self.processes[processID], self.primaryMemory)
+                            #self.dispatcher(self.processes[processID], self.primaryMemory)
                     del self.processes[process.id] # deleta o processo da lista de processos
                     flag = 0
                 else:
@@ -175,5 +183,5 @@ class SOStructure:
                         id = process.id
                     else:
                         id = newProcess.id
-
+        self.secondaryMemory.dump()
         return 0
