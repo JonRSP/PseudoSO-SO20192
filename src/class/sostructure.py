@@ -93,8 +93,10 @@ class SOStructure:
                 # deleta
                 deleted = secondaryMemory.removeFile(action.fileName)
                 if(deleted == 1): # erro arquivo nao existe
-                    print('O processo ' + str(process.id)  + ' não pode deletar o arquivo' + action.fileName + 'porque não existe esse arquivo.')
+                    print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - FALHA ')
+                    print('O processo ' + str(process.id)  + ' não pode deletar o arquivo ' + action.fileName + ' porque não existe esse arquivo.')
                 else: # sucesso em deletar arquivo
+                    print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - SUCESSO ')
                     print('O processo '+ str(process.id)+ ' deletou o arquivo '+ action.fileName +'.')
             else: # Se action eh da CPU (Dummy) Opcode = 2
                 print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - SUCESSO CPU')
@@ -104,43 +106,57 @@ class SOStructure:
                 print('P'+ str(process.id) +' instruction '+ str(action.numberOfOperation) +' - FALHA ')
                 print("O processo "+ str(process.id) + ' esgotou seu tempo de CPU.')
                 return 1
-
         return 0
 
     def run(self):
         flag = 0
+        id = 0
         while (len(self.processes)>0): # Enquanto nao acabarem os processos
             for procID in self.processes: # percorre a lista de processos
                 process = self.processes[procID]
-                if (process.timeOfArrival <= self.globalTime and process.inMemory == 0):
-                    added = self.primaryMemory.addProcess(process,process.id) # tenta adicionar processo na memoria
-                    if (added == 0): #se conseguir adicionar na memoria
-                        process.inMemory = 1
-                        self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto
-                else:
-                    break # break ou pass?
-            if ((not self.scheduler.fifo_queue.is_empty()) or (not self.scheduler.priority_queue.is_empty())):
-                if (flag == 0):
-                    process = self.scheduler.scheduleProcess() # escalona processo mais prioritario
-                    flag = 1
-                while(not process.requestResources(self.resources)): # checar ate encontrar um processo com recurso livre
-                    self.scheduler.queueProcess(process) # processo volta pra fila
-                    process = self.scheduler.scheduleProcess() # pega o proximo processo
                 if (process.timeOfArrival <= self.globalTime):
-                    self.execAction(self.actions[process.id][0], process, self.secondaryMemory) #executa acoes de um processo
-                    self.actions[process.id].remove(self.actions[process.id][0])
+                    if(process.inMemory == 0 and process.tried == 0):
+                        added = self.primaryMemory.addProcess(process,process.id) # tenta adicionar processo na memoria
+                        process.tried = 1
+                        if (added == 0): #se conseguir adicionar na memoria
+                            process.inMemory = 1
+                            self.scheduler.queueProcess(process) # Adiciona processo na fila de pronto
+                else:
+                    pass # break ou pass?
+            if(id in self.processes):
+                process = self.processes[id]
+            if (flag == 0):
+                newProcess = self.scheduler.scheduleProcess() # escalona processo mais prioritario
+                if(newProcess is not None):
+                    process = newProcess
+                    flag = 1
+                else:
                     self.globalTime += 1
-                    if (len(self.actions[process.id]) == 0): # acabaram as acoes do processo
-                        print('P'+ str(process.id) +' return SIGINT')
-                        process.freeResources(self.resources) # libera os recursos
-                        addedProcessesAfterRemove = removeProcess(process,process.id) # remove da memoria principal
-                        if (addedProcessesAfterRemove[0] == 0):
-                            for processID in addedProcessesAfterRemove[1]:
-                                self.scheduler.queueProcess(self.processes[processID])
-                        del self.processes[process.id] # deleta o processo da lista de processos
-                        flag = 0
-                    else:
-                        process = self.scheduler.preemptProcess(process,self.globalTime) # preempcao, caso tenha, haverá a troca de processo
-            else:
+            while(not process.requestResources(self.resources)): # checar ate encontrar um processo com recurso livre
+                self.scheduler.queueProcess(process) # processo volta pra fila
+                process = self.scheduler.scheduleProcess() # pega o proximo processo
+            if (process.timeOfArrival <= self.globalTime):
+                executed = self.execAction(self.actions[process.id][0], process, self.secondaryMemory) #executa acoes de um processo
+                if(executed == 0):
+                    self.actions[process.id].remove(self.actions[process.id][0])
+                else:
+                    self.actions[process.id] = []
                 self.globalTime += 1
+                if (len(self.actions[process.id]) == 0): # acabaram as acoes do processo
+                    print('P'+ str(process.id) +' return SIGINT')
+                    process.freeResources(self.resources) # libera os recursos
+                    addedProcessesAfterRemove = self.primaryMemory.removeProcess(process,process.id) # remove da memoria principal
+                    if (addedProcessesAfterRemove[0] == 0):
+                        for processID in addedProcessesAfterRemove[1]:
+                            self.scheduler.queueProcess(self.processes[processID])
+                            self.processes[processID].inMemory = 1
+                    del self.processes[process.id] # deleta o processo da lista de processos
+                    flag = 0
+                else:
+                    newProcess = self.scheduler.preemptProcess(process,self.globalTime) # preempcao, caso tenha, haverá a troca de processo
+                    if(newProcess==process):
+                        id = process.id
+                    else:
+                        id = newProcess.id
+
         return 0

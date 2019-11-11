@@ -13,18 +13,16 @@ class Action:
     def __init__(self, elements):
         self.finishedAction = 0
         self.info = len(elements)
-        self.processID = elements[0]
-        self.operationCode = elements[1]
+        self.processID = int(elements[0])
+        self.operationCode = int(elements[1])
         self.fileName = elements[2]
         if(self.info == 4):
-            self.numberOfOperation = elements[3]
+            self.numberOfOperation = int(elements[3])
         elif(self.info == 5):
-            self.numberOfBlocks = elements[3]
-            self.numberOfOperation = elements[4]
+            self.numberOfBlocks = int(elements[3])
+            self.numberOfOperation = int(elements[4])
     def __str__(self):
         if(self.info == 4):
             return str(self.processID)+', '+str(self.operationCode)+', '+str(self.fileName)+', '+str(self.numberOfOperation)
         else:
             return str(self.processID)+', '+str(self.operationCode)+', '+str(self.fileName)+', '+str(self.numberOfBlocks)+', '+str(self.numberOfOperation)
-
-    

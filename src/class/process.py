@@ -19,6 +19,7 @@ class Process:
         self.requestModem = int(elements[6])
         self.requestDisk = int(elements[7])
         self.inMemory = 0
+        self.tried = 0
 
     def requestResources(self, resources):
         auxlist = [self.requestPrinter, self.requestScanner, self.requestModem, self.requestDisk]

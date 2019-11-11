@@ -22,7 +22,10 @@ class FifoQueue(deque):
             return 1
 
     def pop(self):
-        return self.fifo_queue.popleft()
+        try:
+            return self.fifo_queue.popleft()
+        except:
+            return None
 
     def is_empty(self):
         return len(self.fifo_queue) == 0
@@ -58,11 +61,20 @@ class PriorityQueue(deque):
 
     def pop(self):
         if(len(self.first_queue) > 0):
-            return self.first_queue.popleft()
+            try:
+                return self.first_queue.popleft()
+            except:
+                return None
         elif(len(self.second_queue) > 0):
-            return self.second_queue.popleft()
+            try:
+                return self.second_queue.popleft()
+            except:
+                return None
         else:
-            return self.third_queue.popleft()
+            try:
+                return self.third_queue.popleft()
+            except:
+                return None
 
     def is_empty(self):
         return ((len(self.first_queue)  == 0) and (len(self.second_queue)  == 0) and (len(self.third_queue)  == 0))
